@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.leoybkim.showtime.R;
 import com.leoybkim.showtime.models.Movie;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         ImageView imageView;
         TextView tvTitle;
         TextView tvOverview;
+        ProgressBar progressBar;
     }
 
     public MovieArrayAdapter(Context context, List<Movie> movies) {
@@ -39,7 +42,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
     public View getView(int position, View convertView, ViewGroup parent) {
         Movie movie = getItem(position);
 
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
 
         if (convertView == null) {
 
@@ -51,6 +54,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.ivMovieImage);
             viewHolder.tvTitle = (TextView) convertView.findViewById(tvTitle);
             viewHolder.tvOverview = (TextView) convertView.findViewById(tvOverview);
+            viewHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
@@ -62,12 +66,35 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         viewHolder.imageView.setImageResource(0);
         viewHolder.tvTitle.setText(movie.getOriginalTitle());
         viewHolder.tvOverview.setText(movie.getOverview());
+        viewHolder.progressBar.setVisibility(View.VISIBLE);
 
         int orientation = getContext().getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Picasso.with(getContext()).load(movie.getPosterPath()).into(viewHolder.imageView);
+            Picasso.with(getContext()).load(movie.getPosterPath()).into(viewHolder.imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    viewHolder.progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError() {
+                    // TODO Auto-generated method stub
+
+                }
+            });
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Picasso.with(getContext()).load(movie.getBackdropPath()).into(viewHolder.imageView);
+            Picasso.with(getContext()).load(movie.getBackdropPath()).into(viewHolder.imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    viewHolder.progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError() {
+                    // TODO Auto-generated method stub
+
+                }
+            });
         }
         return convertView;
     }
