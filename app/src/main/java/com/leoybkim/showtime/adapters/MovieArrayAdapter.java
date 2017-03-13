@@ -17,8 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import static com.leoybkim.showtime.R.id.tvOverview;
-import static com.leoybkim.showtime.R.id.tvTitle;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
  * Created by leo on 07/03/17.
@@ -29,8 +28,8 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
     // View lookup cache
     private static class ViewHolder {
         ImageView imageView;
-        TextView tvTitle;
-        TextView tvOverview;
+        TextView title;
+        TextView overview;
         ProgressBar progressBar;
     }
 
@@ -51,10 +50,10 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             convertView = layoutInflater.inflate(R.layout.item_movie, parent, false);
 
-            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.ivMovieImage);
-            viewHolder.tvTitle = (TextView) convertView.findViewById(tvTitle);
-            viewHolder.tvOverview = (TextView) convertView.findViewById(tvOverview);
-            viewHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.poster);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.main_title);
+            viewHolder.overview = (TextView) convertView.findViewById(R.id.main_overview);
+            viewHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
@@ -63,14 +62,14 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.imageView.setImageResource(0);
-        viewHolder.tvTitle.setText(movie.getOriginalTitle());
-        viewHolder.tvOverview.setText(movie.getOverview());
+        viewHolder.title.setText(movie.getOriginalTitle());
+        viewHolder.overview.setText(movie.getOverview());
         viewHolder.progressBar.setVisibility(View.VISIBLE);
 
         int orientation = getContext().getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Picasso.with(getContext()).load(movie.getPosterPath()).into(viewHolder.imageView, new Callback() {
+            Picasso.with(getContext()).load(movie.getPosterPath())
+                    .transform(new RoundedCornersTransformation(30, 10)).into(viewHolder.imageView, new Callback() {
                 @Override
                 public void onSuccess() {
                     viewHolder.progressBar.setVisibility(View.GONE);
@@ -79,11 +78,11 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
                 @Override
                 public void onError() {
                     // TODO Auto-generated method stub
-
                 }
             });
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Picasso.with(getContext()).load(movie.getBackdropPath()).into(viewHolder.imageView, new Callback() {
+            Picasso.with(getContext()).load(movie.getBackdropPath())
+                    .transform(new RoundedCornersTransformation(20, 10)).into(viewHolder.imageView, new Callback() {
                 @Override
                 public void onSuccess() {
                     viewHolder.progressBar.setVisibility(View.GONE);

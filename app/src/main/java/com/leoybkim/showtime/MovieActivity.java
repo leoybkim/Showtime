@@ -1,8 +1,10 @@
 package com.leoybkim.showtime;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.leoybkim.showtime.adapters.MovieArrayAdapter;
@@ -45,7 +47,6 @@ public class MovieActivity extends AppCompatActivity {
                     movieJsonResults = response.getJSONArray("results");
                     movies.addAll(Movie.fromJSONArray(movieJsonResults));
                     movieArrayAdapter.notifyDataSetChanged();
-                    Log.d("DEBUG", movies.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -54,6 +55,16 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Movie movie = movieArrayAdapter.getItem(i);
+                Intent intent = new Intent(MovieActivity.this, MovieDetailsActivity.class);
+                intent.putExtra("movie", movie);
+                startActivity(intent);
             }
         });
     }
