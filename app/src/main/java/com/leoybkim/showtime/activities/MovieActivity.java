@@ -1,4 +1,4 @@
-package com.leoybkim.showtime;
+package com.leoybkim.showtime.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.leoybkim.showtime.BuildConfig;
+import com.leoybkim.showtime.R;
 import com.leoybkim.showtime.adapters.MovieArrayAdapter;
 import com.leoybkim.showtime.models.Movie;
 import com.loopj.android.http.AsyncHttpClient;
@@ -36,10 +38,11 @@ public class MovieActivity extends AppCompatActivity {
         movieArrayAdapter = new MovieArrayAdapter(this, movies);
         lvItems.setAdapter(movieArrayAdapter);
 
-        String apiKey = BuildConfig.MOVIE_DB_API_KEY;
-        String url = "https://api.themoviedb.org/3/movie/now_playing?api_key=" + apiKey;
+        String movieDbApiKey = BuildConfig.MOVIE_DB_API_KEY;
+        String nowPlayingUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=" + movieDbApiKey;
+
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url, new JsonHttpResponseHandler(){
+        client.get(nowPlayingUrl, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray movieJsonResults = null;

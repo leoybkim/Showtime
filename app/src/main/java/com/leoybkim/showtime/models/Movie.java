@@ -23,6 +23,10 @@ public class Movie implements Parcelable {
         return String.format("https://image.tmdb.org/t/p/w342/%s", backdropPath);
     }
 
+    public String getWideBackdropPath() {
+        return String.format("https://image.tmdb.org/t/p/w780/%s", backdropPath);
+    }
+
     public String getOriginalTitle() {
         return originalTitle;
     }
@@ -35,7 +39,7 @@ public class Movie implements Parcelable {
 
     public int getId() { return id; }
 
-    public double getRating() { return rating; }
+    public double getRating() { return rating / 2; }
 
     private int id;
     private String posterPath;
