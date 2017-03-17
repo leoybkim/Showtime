@@ -17,6 +17,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
@@ -26,11 +28,15 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
     // View lookup cache
-    private static class ViewHolder {
-        ImageView imageView;
-        TextView title;
-        TextView overview;
-        ProgressBar progressBar;
+    static class ViewHolder {
+        @BindView(R.id.poster) ImageView imageView;
+        @BindView(R.id.main_title) TextView title;
+        @BindView(R.id.main_overview) TextView overview;
+        @BindView(R.id.progress_bar) ProgressBar progressBar;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
     public MovieArrayAdapter(Context context, List<Movie> movies) {
@@ -46,14 +52,9 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
         if (convertView == null) {
 
             // if there is no view to re-use, inflate a new view
-            viewHolder = new ViewHolder();
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             convertView = layoutInflater.inflate(R.layout.item_movie, parent, false);
-
-            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.poster);
-            viewHolder.title = (TextView) convertView.findViewById(R.id.main_title);
-            viewHolder.overview = (TextView) convertView.findViewById(R.id.main_overview);
-            viewHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+            viewHolder = new ViewHolder(convertView);
 
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);

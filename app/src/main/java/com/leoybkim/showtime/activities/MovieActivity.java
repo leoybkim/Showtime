@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -57,17 +58,6 @@ public class MovieActivity extends AppCompatActivity {
         nowPlayingUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=" + movieDbApiKey;
         getNowPlaying();
 
-        // Launch MovieDetailsActivity on click
-        listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Movie movie = mMovieArrayAdapter.getItem(i);
-                Intent intent = new Intent(MovieActivity.this, MovieDetailsActivity.class);
-                intent.putExtra("movie", movie);
-                startActivity(intent);
-            }
-        });
-
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -82,6 +72,15 @@ public class MovieActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+    }
+
+    // Launch MovieDetailsActivity on click
+    @OnItemClick(R.id.lvmovies)
+    void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Movie movie = mMovieArrayAdapter.getItem(i);
+        Intent intent = new Intent(MovieActivity.this, MovieDetailsActivity.class);
+        intent.putExtra("movie", movie);
+        startActivity(intent);
     }
 
     // Make API call to TheMovieDatabase and retrieves "now playing" movies in json object
