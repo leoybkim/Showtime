@@ -17,16 +17,19 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import com.leoybkim.showtime.BuildConfig;
 import com.leoybkim.showtime.R;
 import com.leoybkim.showtime.models.Movie;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cz.msebera.android.httpclient.Header;
+import java.io.IOException;
+
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.leoybkim.showtime.R.id.progress_bar;
 
@@ -40,6 +43,8 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
     public static final String LOG_TAG = MovieDetailsActivity.class.getSimpleName();
     private String mVideoId;
     private YouTubePlayerView mYoutubePlayerView;
+    private YouTubePlayer mYouTubePlayer;
+    private String mMovieUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +54,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
         // Prepare API call
         String movieDbApiKey = BuildConfig.MOVIE_DB_API_KEY;
         Movie movie = getIntent().getParcelableExtra("movie");
-        String movieUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/videos?api_key=" + movieDbApiKey;
+        mMovieUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/videos?api_key=" + movieDbApiKey;
 
         // Setup layout
         TextView title = (TextView) findViewById(R.id.title);
@@ -65,26 +70,6 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
         releaseDate.setText(getString(R.string.release_date, movie.getReleaseDate()));
         ratings.setRating((float) movie.getRating());
 
-        // Retrieve trailer url
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(movieUrl, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    // Retrieve video url from the movie specified
-                    // TODO: check if it has a trailer, if it is from Youtube
-                    mVideoId = response.getJSONArray("results").getJSONObject(0).getString("key");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
-        });
-
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             // Horizontal orientation
             ImageView backdrop = (ImageView) findViewById(R.id.backdrop);
@@ -93,7 +78,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
 
             // Load backdrop image
             Picasso.with(this).load(movie.getWideBackdropPath())
-                    .transform(new RoundedCornersTransformation(30, 10)).into(backdrop, new Callback() {
+                    .transform(new RoundedCornersTransformation(30, 10)).into(backdrop, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
                     progressBar.setVisibility(View.GONE);
@@ -123,9 +108,33 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
     // Cue trailers
     public void initializeYoutubePlayer() {
         mYoutubePlayerView.initialize(BuildConfig.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                youTubePlayer.cueVideo(mVideoId);
+                mYouTubePlayer = youTubePlayer;
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(mMovieUrl)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        try {
+                            // Retrieve video url from the movie specified
+                            JSONObject responseJson = new JSONObject(response.body().string());
+                            mVideoId = responseJson.getJSONArray("results").getJSONObject(0).getString("key");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mYouTubePlayer.cueVideo(mVideoId);
+                    }
+                });
             }
 
             @Override

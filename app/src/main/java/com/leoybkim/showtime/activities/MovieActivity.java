@@ -7,21 +7,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.leoybkim.showtime.BuildConfig;
 import com.leoybkim.showtime.R;
 import com.leoybkim.showtime.adapters.MovieArrayAdapter;
 import com.leoybkim.showtime.models.Movie;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-import cz.msebera.android.httpclient.Header;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.leoybkim.showtime.R.id.swipeContainer;
 
@@ -82,29 +86,41 @@ public class MovieActivity extends AppCompatActivity {
 
     // Make API call to TheMovieDatabase and retrieves "now playing" movies in json object
     public void getNowPlaying() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(nowPlayingUrl, new JsonHttpResponseHandler(){
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(nowPlayingUrl)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                JSONArray movieJsonResults = null;
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(MovieActivity.this, "OkHttpClient error: " + e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                JSONArray moviesJsonResult = null;
                 try {
                     // Clear pre-existing array list to avoid duplication
                     if (mMovies != null) { mMovies.clear(); }
 
                     // Parse json results
-                    movieJsonResults = response.getJSONArray("results");
-                    mMovies.addAll(Movie.fromJSONArray(movieJsonResults));
-
-                    // Update adapter
-                    mMovieArrayAdapter.notifyDataSetChanged();
+                    JSONObject responseJson = new JSONObject(response.body().string());
+                    moviesJsonResult = responseJson.getJSONArray("results");
+                    mMovies.addAll(Movie.fromJSONArray(moviesJsonResult));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
+                // Adapter on UI Tread to update the data
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Update adapter
+                        mMovieArrayAdapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
     }
