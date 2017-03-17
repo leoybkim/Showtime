@@ -21,36 +21,36 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static com.leoybkim.showtime.R.id.swipeContainer;
-
 public class MovieActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MovieActivity.class.getSimpleName();
     private ArrayList<Movie> mMovies;
     private MovieArrayAdapter mMovieArrayAdapter;
-    private ListView mListViewItems;
     private String nowPlayingUrl;
-    private SwipeRefreshLayout mSwipeContainer;
+
+    @BindView(R.id.lvmovies) ListView listViewItems;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
-        // Find view resources
-        mSwipeContainer = (SwipeRefreshLayout) findViewById(swipeContainer);
-        mListViewItems = (ListView) findViewById(R.id.lvmovies);
+        // ButterKnife :)
+        ButterKnife.bind(this);
 
         // Setup custom adapter
         mMovies = new ArrayList<>();
         mMovieArrayAdapter = new MovieArrayAdapter(this, mMovies);
-        mListViewItems.setAdapter(mMovieArrayAdapter);
+        listViewItems.setAdapter(mMovieArrayAdapter);
 
         // Setup API and make http request
         String movieDbApiKey = BuildConfig.MOVIE_DB_API_KEY;
@@ -58,7 +58,7 @@ public class MovieActivity extends AppCompatActivity {
         getNowPlaying();
 
         // Launch MovieDetailsActivity on click
-        mListViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Movie movie = mMovieArrayAdapter.getItem(i);
@@ -69,16 +69,16 @@ public class MovieActivity extends AppCompatActivity {
         });
 
         // Setup refresh listener which triggers new data loading
-        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getNowPlaying();
-                mSwipeContainer.setRefreshing(false);
+                swipeContainer.setRefreshing(false);
             }
         });
 
         // Configure the refreshing colors
-        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);

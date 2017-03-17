@@ -24,6 +24,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,26 +44,29 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
 
     public static final String LOG_TAG = MovieDetailsActivity.class.getSimpleName();
     private String mVideoId;
-    private YouTubePlayerView mYoutubePlayerView;
     private YouTubePlayer mYouTubePlayer;
     private String mMovieUrl;
+
+    @BindView(R.id.title) TextView title;
+    @BindView(R.id.overview) TextView overview;
+    @BindView(R.id.release_date) TextView releaseDate;
+    @BindView(R.id.rating_star) RatingBar ratings;
+    @BindView(R.id.youtube_player) YouTubePlayerView youtubePlayerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        // ButterKnife :)
+        ButterKnife.bind(this);
+
         // Prepare API call
         String movieDbApiKey = BuildConfig.MOVIE_DB_API_KEY;
         Movie movie = getIntent().getParcelableExtra("movie");
         mMovieUrl = "https://api.themoviedb.org/3/movie/" + movie.getId() + "/videos?api_key=" + movieDbApiKey;
 
-        // Setup layout
-        TextView title = (TextView) findViewById(R.id.title);
-        TextView overview = (TextView) findViewById(R.id.overview);
-        TextView releaseDate = (TextView) findViewById(R.id.release_date);
-        RatingBar ratings = (RatingBar) findViewById(R.id.rating_star);
-        mYoutubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_player);
+        // Get orientation
         int orientation = getResources().getConfiguration().orientation;
 
         // Load movie details
@@ -94,7 +99,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
             playButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    mYoutubePlayerView.setVisibility(View.VISIBLE);
+                    youtubePlayerView.setVisibility(View.VISIBLE);
                     initializeYoutubePlayer();
                     return false;
                 }
@@ -107,7 +112,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
 
     // Cue trailers
     public void initializeYoutubePlayer() {
-        mYoutubePlayerView.initialize(BuildConfig.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+        youtubePlayerView.initialize(BuildConfig.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
 
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
