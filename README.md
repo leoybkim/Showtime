@@ -39,8 +39,10 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/kWkvIP2.gif' title='Video Walkthrough Vertical' width='' alt='Video Walkthrough Vertical' />
-<img src='http://i.imgur.com/pp5pY91.gif' title='Video Walkthrough Vertical' width='' alt='Video Walkthrough Vertical' />
+<img src='http://i.imgur.com/7A52cfA.gif' title='Video Walkthrough Vertical' width='' alt='Video Walkthrough Vertical' />
+<img src='http://i.imgur.com/OyBCP8Z.gif' title='Video Walkthrough Horizontal' width='' alt='Video Walkthrough Horizontal' />
+
+GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Open-source libraries used
 
