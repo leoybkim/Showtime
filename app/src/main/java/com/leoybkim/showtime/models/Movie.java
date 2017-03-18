@@ -20,7 +20,7 @@ public class Movie implements Parcelable {
     }
 
     public String getBackdropPath() {
-        return String.format("https://image.tmdb.org/t/p/w342/%s", backdropPath);
+        return String.format("https://image.tmdb.org/t/p/w300/%s", backdropPath);
     }
 
     public String getWideBackdropPath() {

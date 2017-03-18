@@ -8,6 +8,6 @@
     <dimen name="poster_height">513px</dimen>
 
     <!-- Backdrop image size from The Movie Database API -->
-    <dimen name="backdrop_width">342px</dimen>
-    <dimen name="backdrop_height">192px</dimen>
+    <dimen name="backdrop_width">780px</dimen>
+    <dimen name="backdrop_height">439px</dimen>
 </resources>

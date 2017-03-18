@@ -82,7 +82,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
                 }
             });
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Picasso.with(getContext()).load(movie.getBackdropPath())
+            Picasso.with(getContext()).load(movie.getWideBackdropPath())
                     .transform(new RoundedCornersTransformation(20, 10)).into(viewHolder.imageView, new Callback() {
                 @Override
                 public void onSuccess() {
