@@ -1,12 +1,10 @@
 package com.leoybkim.showtime.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.leoybkim.showtime.BuildConfig;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -37,7 +34,7 @@ public class MovieActivity extends AppCompatActivity {
     private MovieArrayAdapter mMovieArrayAdapter;
     private String nowPlayingUrl;
 
-    @BindView(R.id.lvmovies) ListView listViewItems;
+    @BindView(R.id.rc_movies) RecyclerView recyclerView;
     @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
 
     @Override
@@ -48,10 +45,11 @@ public class MovieActivity extends AppCompatActivity {
         // ButterKnife :)
         ButterKnife.bind(this);
 
-        // Setup custom adapter
+        // Setup custom adapter with recycler view
         mMovies = new ArrayList<>();
         mMovieArrayAdapter = new MovieArrayAdapter(this, mMovies);
-        listViewItems.setAdapter(mMovieArrayAdapter);
+        recyclerView.setAdapter(mMovieArrayAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Setup API and make http request
         String movieDbApiKey = BuildConfig.MOVIE_DB_API_KEY;
@@ -72,15 +70,6 @@ public class MovieActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-    }
-
-    // Launch MovieDetailsActivity on click
-    @OnItemClick(R.id.lvmovies)
-    void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Movie movie = mMovieArrayAdapter.getItem(i);
-        Intent intent = new Intent(MovieActivity.this, MovieDetailsActivity.class);
-        intent.putExtra("movie", movie);
-        startActivity(intent);
     }
 
     // Make API call to TheMovieDatabase and retrieves "now playing" movies in json object
