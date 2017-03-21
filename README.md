@@ -1,8 +1,6 @@
-# Project 1 - Showtime
+# Project 1 - ShowTime
 
-**Showtime** shows the latest movies currently playing in theaters. The app utilizes the Movie Database API to display images and basic information about these movies to the user.
-
-Time spent: **X** hours spent in total
+**ShowTime** shows the latest movies currently playing in theaters. The app utilizes the Movie Database API to display images and basic information about these movies to the user.
 
 ## User Stories
 
@@ -22,14 +20,14 @@ The following **optional** features are implemented:
 The following **bonus** features are implemented:
 
 * [X] Allow user to view details of the movie including ratings and popularity within a separate activity or dialog fragment.
-* [ ] When viewing a popular movie (i.e. a movie voted for more than 5 stars) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.
+* [ ] ~~When viewing a popular movie (i.e. a movie voted for more than 5 stars) the video should show the full backdrop image as the layout.  Uses [Heterogenous ListViews](http://guides.codepath.com/android/Implementing-a-Heterogenous-ListView) or [Heterogenous RecyclerView](http://guides.codepath.com/android/Heterogenous-Layouts-inside-RecyclerView) to show different layouts.~~
 * [X] Allow video trailers to be played in full-screen using the YouTubePlayerView.
     * [X] Overlay a play icon for videos that can be played.
-    * [ ] More popular movies should start a separate activity that plays the video immediately.
-    * [ ] Less popular videos rely on the detail page should show ratings and a YouTube preview.
-* [ ] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
+    * [ ] ~~More popular movies should start a separate activity that plays the video immediately.~~
+    * [ ] ~~Less popular videos rely on the detail page should show ratings and a YouTube preview.~~
+* [X] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce boilerplate code.
 * [X] Apply rounded corners for the poster or background images using [Picasso transformations](https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library#other-transformations)
-* [ ] Replaced android-async-http network client with the popular [OkHttp](http://guides.codepath.com/android/Using-OkHttp) networking libraries.
+* [X] Replaced android-async-http network client with the popular [OkHttp](http://guides.codepath.com/android/Using-OkHttp) networking libraries.
 
 The following **additional** features are implemented:
 
@@ -39,15 +37,16 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/7A52cfA.gif' title='Video Walkthrough Vertical' width='' alt='Video Walkthrough Vertical' />
-<img src='http://i.imgur.com/OyBCP8Z.gif' title='Video Walkthrough Horizontal' width='' alt='Video Walkthrough Horizontal' />
+<img src='http://i.imgur.com/GdlzF30.gif' title='Video Walkthrough Vertical' width='' alt='Video Walkthrough Vertical' />
+<img src='http://i.imgur.com/OCgcBXg.gif' title='Video Walkthrough Horizontal' width='' alt='Video Walkthrough Horizontal' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Open-source libraries used
 
-- [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
+- [OkHttp](http://square.github.io/okhttp/) - An HTTP & HTTP/2 client for Android and Java applications
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Butterknife](http://jakewharton.github.io/butterknife/) - Bind Android views and callbacks to fields and methods
 
 ## License
 
